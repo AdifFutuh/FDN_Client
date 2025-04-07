@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <link rel="stylesheet" th:href="@{/css/register.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.2/css/bootstrap.min.css}" type="text/css"/>
+
+    <title>Regis</title>
+</head>
+<body>
+<div class="container mt-5">
+    <h2>Form Registrasi</h2>
+    <form id="form-regis" th:action="@{/auth/regis}" method="post" th:object="${userDTO}">
+        <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input th:field="*{username}" type="text" class="form-control" id="username" placeholder="Username" required>
+            <p class="text-danger" id="errorUsername"></p>
+        </div>
+
+        <div class="mb-3">
+            <label for="nama" class="form-label">Nama Lengkap</label>
+            <input th:field="*{nama}" type="text" class="form-control" id="nama" required>
+            <p class="text-danger" id="errorNama"></p>
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input th:field="*{password}" type="password" class="form-control" id="password" required>
+            <p class="text-danger" id="errorPwd"></p>
+        </div>
+
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input th:field="*{email}" type="email" class="form-control" id="email" required>
+            <p class="text-danger" id="errorEmail"></p>
+        </div>
+
+        <div class="mb-3">
+            <label for="alamat" class="form-label">Alamat</label>
+            <textarea th:field="*{alamat}" class="form-control" id="alamat" rows="3" required></textarea>
+            <p class="text-danger" id="errorAlamat"></p>
+        </div>
+
+        <div class="mb-3">
+            <label for="noHp" class="form-label">Nomor HP</label>
+            <input th:field="*{noHp}" type="text" class="form-control" id="noHp" required>
+            <p class="text-danger" id="errorNoHp"></p>
+        </div>
+
+        <div class="mb-3">
+            <label for="tanggalLahir" class="form-label">Tanggal Lahir</label>
+            <input th:field="*{tanggalLahir}" type="date" class="form-control" id="tanggalLahir" required>
+            <p class="text-danger" id="errorTanggalLahir"></p>
+        </div>
+
+        <button id="button-regis" type="button" class="btn btn-primary">Daftar</button>
+    </form>
+</div>
+
+<script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script>
+    $(document).ready(function () {
+        $('#button-regis').on('click', function (e) {
+            e.preventDefault();
+            clearAllErrorMessage();
+
+            var isOk = true;
+
+            var username = $("#username").val();
+            var nama = $("#nama").val();
+            var pwd = $("#password").val();
+            var email = $("#email").val();
+            var alamat = $("#alamat").val();
+            var noHp = $("#noHp").val();
+            var tanggalLahir = $("#tanggalLahir").val();
+
+            // Username: huruf kecil dan angka, 8-16
+            if (!/^([a-z0-9]{8,16})$/.test(username)) {
+                isOk = false;
+                $("#errorUsername").text("Format Huruf kecil ,numeric saja min 8 max 16 karakter, contoh : jaenudin123");
+            }
+
+            // Nama: Alfabet dan spasi, 4-25
+            if (!/^[a-zA-Z\s]{4,25}$/.test(nama)) {
+                isOk = false;
+                $("#errorNama").text("Hanya Alfabet dan spasi Minimal 4 Maksimal 25");
+            }
+
+            // Password: kombinasi huruf besar, kecil, angka, simbol khusus
+            if (!/^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[@_#\-$])[A-Za-z0-9@_#\-$]{9,16}$/.test(pwd)) {
+                isOk = false;
+                $("#errorPwd").text("Format minimal 1 angka, 1 huruf kecil, 1 huruf besar, 1 spesial karakter (@ _ # - $), panjang 9-16");
+            }
+
+            // Email
+            if (!/^(?=.{1,256})(?=.{1,64}@.{1,255}$)(?:(?![.])[a-zA-Z0-9._%+-]+(?:(?<!\\)[.][a-zA-Z0-9-]+)*?)@[a-zA-Z0-9.-]+(?:\.[a-zA-Z]{2,50})+$/.test(email)) {
+                isOk = false;
+                $("#errorEmail").text("Format tidak valid contoh : user_name123@sub.domain.com");
+            }
+
+            // Alamat
+            if (!/^[\w\s\.\,]{20,255}$/.test(alamat)) {
+                isOk = false;
+                $("#errorAlamat").text("Format Alamat Tidak Valid min 20 maks 255, contoh : Jln. Kenari 2B jakbar 11480");
+            }
+
+            // No HP
+            if (!/^(62|\+62|0)8[0-9]{9,13}$/.test(noHp)) {
+                isOk = false;
+                $("#errorNoHp").text("Format No HP Tidak Valid , min 9 max 13 setelah angka 8, contoh : (0/62/+62)81111111");
+            }
+
+            // Tanggal Lahir wajib
+            if (tanggalLahir === "") {
+                isOk = false;
+                $("#errorTanggalLahir").text("Tanggal lahir tidak boleh kosong");
+            }
+
+            if (isOk) {
+<!--                var pwdCrypto = btoa(pwd); // Enkripsi sederhana-->
+<!--                $("#password").val(pwdCrypto);-->
+                $("#form-regis").submit();
+                clearAllField();
+
+            }
+        });
+
+        function clearAllErrorMessage() {
+            $("#errorUsername").text("");
+            $("#errorPwd").text("");
+            $("#errorCaptcha").text("");
+            $("#errorEmail").text("");
+            $("#errorAlamat").text("");
+            $("#errorNoHp").text("");
+            $("#errorNama").text("");
+            $("#errorTanggalLahir").text("");
+        }
+
+        function clearAllField(){
+            $("#username").val("");
+            $("#nama").val("");
+            $("#password").val("");
+            $("#email").val("");
+            $("#alamat").val("");
+            $("#noHp").val("");
+            $("#tanggalLahir").val("");
+        }
+
+    });
+</script>
+</body>
+</html>
