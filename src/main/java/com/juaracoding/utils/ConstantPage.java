@@ -9,5 +9,5 @@ public class ConstantPage {
 
 
     public static final String LOGIN_PAGE = "/auth/login";
-    public static final String HOME_PAGE = "/auth/home";
+    public static final String HOME_PAGE = "/home";
 }
