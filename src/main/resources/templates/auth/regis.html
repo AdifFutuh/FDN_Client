@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
@@ -9,12 +9,17 @@
     <title>Regis</title>
 </head>
 <body>
+<div id="error-alert" class="alert-box" th:if="${error != null}" th:text="${error}"></div>
+
 <div class="container mt-5">
-    <h2>Form Registrasi</h2>
+
+
+    <h2>Form Registration</h2>
     <form id="form-regis" th:action="@{/auth/regis}" method="post" th:object="${userDTO}">
         <div class="mb-3">
             <label for="username" class="form-label">Username</label>
-            <input th:field="*{username}" type="text" class="form-control" id="username" placeholder="Username" required>
+            <input th:field="*{username}" type="text" class="form-control" id="username" placeholder="Username"
+                   required>
             <p class="text-danger" id="errorUsername"></p>
         </div>
 
@@ -148,6 +153,18 @@
         }
 
     });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const alertBox = document.getElementById("error-alert");
+      if (alertBox) {
+          setTimeout(() => {
+              alertBox.style.transition = "opacity 0.5s";
+              alertBox.style.opacity = "0";
+              setTimeout(() => alertBox.remove(), 500); // remove after fade out
+          }, 5000); // hide after 5 seconds
+      }
+  });
 </script>
 </body>
 </html>

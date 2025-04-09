@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${title}">Info Page</title>
+    <link rel="stylesheet" th:href="@{/css/info-page.css}" type="text/css">
+
+</head>
+<body>
+<div class="container">
+    <div class="status-icon" th:classappend="${success} ? 'success' : 'error'">
+        <span th:text="${success} ? '✓' : '✕'"></span>
+    </div>
+    <h1 th:text="${title}"></h1>
+    <p class="message" th:text="${message}">Pesan info</p>
+    <a th:href="${buttonLink}" th:text="${buttonText}" class="btn">Kembali</a>
+</div>
+</body>
+</html>

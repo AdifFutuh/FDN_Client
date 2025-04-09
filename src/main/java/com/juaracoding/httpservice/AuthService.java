@@ -1,5 +1,6 @@
 package com.juaracoding.httpservice;
 
+import com.juaracoding.config.FeignClientConfig;
 import com.juaracoding.dto.validation.ValLoginDTO;
 import com.juaracoding.dto.validation.ValUserDTO;
 import com.juaracoding.dto.validation.ValVerifyRegisDTO;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Map;
 
-@FeignClient(name = "auth-services",url = "http://localhost:8080/auth")
+@FeignClient(name = "auth-services", configuration = FeignClientConfig.class, url = "http://localhost:8080/auth")
 public interface AuthService {
 
     @PostMapping("/login")

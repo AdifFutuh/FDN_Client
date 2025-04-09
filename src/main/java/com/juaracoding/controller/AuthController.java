@@ -1,23 +1,26 @@
 package com.juaracoding.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.juaracoding.dto.reference.RefAccessDTO;
+import com.juaracoding.dto.response.ErrorResponseDTO;
 import com.juaracoding.dto.validation.ValUserDTO;
 import com.juaracoding.dto.validation.ValVerifyRegisDTO;
 import com.juaracoding.httpservice.AuthService;
 import com.juaracoding.utils.ConstantPage;
+import feign.FeignException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.WebRequest;
 
-import java.time.LocalDate;
+import java.io.IOException;
 import java.util.Map;
 
 @Controller
@@ -26,23 +29,6 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
-    @PostMapping("/verify-regis")
-    public String verifyRegis(
-            Model model,
-            @Valid @ModelAttribute("userDTO") ValVerifyRegisDTO verifyRegisDTO,
-            BindingResult result,
-            WebRequest webRequest
-    ){
-        ResponseEntity<Object> response = null;
-        String menuNavBar = "";
-        try{
-
-            response = authService.verifyRegis(verifyRegisDTO);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return ConstantPage.HOME_PAGE;
-    }
 
     @PostMapping("/regis")
     public String regis(
@@ -50,19 +36,18 @@ public class AuthController {
             @Valid @ModelAttribute("verifyRegisDTO") ValUserDTO valUserDTO,
             BindingResult result,
             WebRequest webRequest
-    ){
+    ) {
         String menuNavBar = "";
-        try{
+        try {
             RefAccessDTO accessDTO = new RefAccessDTO();
             accessDTO.setId(3L);
             valUserDTO.setAkses(accessDTO);
             ResponseEntity<Object> response = authService.regis(valUserDTO);
-            Map<String,Object> responseBody = (Map<String, Object>) response.getBody();
+            Map<String, Object> responseBody = (Map<String, Object>) response.getBody();
 
             boolean success = (Boolean) responseBody.get("success");
-            String errorCode = (String)responseBody.get("error-code");
 
-            if (success){
+            if (success) {
                 ValVerifyRegisDTO verifyRegisDTO = new ValVerifyRegisDTO();
                 verifyRegisDTO.setEmail(valUserDTO.getEmail());
 
@@ -70,22 +55,88 @@ public class AuthController {
                 return ConstantPage.VERIFY_OTP;
             }
 
-            if (errorCode.equals("authFVReg001")){
-                System.out.println("masuk sini");
-                return ConstantPage.LOGIN_PAGE;
+
+        } catch (FeignException e) {
+            try {
+                String responseJson = e.contentUTF8(); // Ambil isi body
+                ObjectMapper objectMapper = new ObjectMapper();
+                ErrorResponseDTO errorResponse = objectMapper.readValue(responseJson, ErrorResponseDTO.class);
+
+                String errorCode = errorResponse.getErrorCode();
+                String message = errorResponse.getMessage();
+                boolean success = errorResponse.isSuccess();
+
+                if ("authFVReg001".equals(errorCode)) {
+                    model.addAttribute("error", message);
+                    model.addAttribute("userDTO", new ValUserDTO());
+                    return ConstantPage.REGIS_PAGE;
+                }
+                if ("authFVReg002".equals(errorCode)) {
+                    return ConstantPage.SUCCESS_PAGE;
+                }
+                if ("authFVReg003".equals(errorCode)) {
+                    model.addAttribute("error", "Email Sudah terdaftar silahkan verifikasi OTP dahulu");
+                    return ConstantPage.VERIFY_OTP;
+                }else{
+                    model.addAttribute("title", "Terjadi kesalahan");
+                    model.addAttribute("message", message);
+                    model.addAttribute("buttonText", "Ke Beranda");
+                    model.addAttribute("success", success);
+                    return ConstantPage.ERROR_PAGE;
+                }
+
+            } catch (IOException jsonException) {
+                jsonException.printStackTrace();
             }
-            if (errorCode.equals("authFVReg002")){
-                return ConstantPage.HOME_PAGE;
-            }
-            if (errorCode.equals("authFVReg003")){
-                return ConstantPage.SUCCESS_PAGE;
-            }
+        }
+        return "redirect:/register";
+    }
 
 
+    @PostMapping("/verify-regis")
+    public String verifyRegis(
+            Model model,
+            @Valid @ModelAttribute("userDTO") ValVerifyRegisDTO verifyRegisDTO,
+            BindingResult result,
+            WebRequest webRequest
+    ) {
+        String menuNavBar = "";
+        try {
+            ResponseEntity<Object> response = authService.verifyRegis(verifyRegisDTO);
+
+            Map<String, Object> responseBody = (Map<String, Object>) response.getBody();
+
+            boolean success = (Boolean) responseBody.get("success");
+            model.addAttribute("title", "Akun Teregistrasi");
+            model.addAttribute("message", "Selamat Akun Anda Berhasil DiBuat!!");
+            model.addAttribute("buttonText", "Ke Beranda");
+            model.addAttribute("success", success);
+        } catch (FeignException e) {
+            try {
+                String responseJson = e.contentUTF8();
+                ObjectMapper objectMapper = new ObjectMapper();
+                Map<String, Object> responseBody = objectMapper.readValue(responseJson, new TypeReference<Map<String, Object>>() {
+                });
+
+                String errorCode = (String) responseBody.get("error-code");
+                model.addAttribute("error", responseBody.get("message"));
+
+                if ("authFVReg001".equals(errorCode)) {
+                    return ConstantPage.LOGIN_PAGE;
+                }
+                if ("authFVReg002".equals(errorCode)) {
+                    return ConstantPage.SUCCESS_PAGE;
+                }
+                if ("authFVReg003".equals(errorCode)) {
+                    return ConstantPage.SUCCESS_PAGE;
+                }
+            } catch (IOException jsonException) {
+                jsonException.printStackTrace();
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return "redirect:/register";
+        return ConstantPage.SUCCESS_PAGE;
     }
 
 }

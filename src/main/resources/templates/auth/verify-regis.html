@@ -9,6 +9,8 @@
     <title>Home</title>
 </head>
 <body>
+<!-- Alert Message -->
+<div class="alert" th:if="${error != null}" th:text="${error}"></div>
 
 <div class="card">
     <h2>Verifikasi OTP</h2>
@@ -25,5 +27,18 @@
     </form>
 </div>
 
+<script>
+    // Optional: auto hide after few seconds
+    document.addEventListener("DOMContentLoaded", function () {
+        const alertBox = document.getElementById("error-alert");
+        if (alertBox) {
+            setTimeout(() => {
+                alertBox.style.transition = "opacity 0.5s";
+                alertBox.style.opacity = "0";
+                setTimeout(() => alertBox.remove(), 500); // remove after fade out
+            }, 5000); // hide after 5 seconds
+        }
+    });
+</script>
 </body>
 </html>

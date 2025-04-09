@@ -5,7 +5,8 @@ public class ConstantPage {
     public static final String DEFAULT_PAGE = "/";
     public static final String REGIS_PAGE = "/auth/regis";
     public static final String VERIFY_OTP = "/auth/verify-regis";
-    public static final String SUCCESS_PAGE = "/auth/home";
+    public static final String SUCCESS_PAGE = "/general/info-page";
+    public static final String ERROR_PAGE = "/general/info-page";
 
 
     public static final String LOGIN_PAGE = "/auth/login";

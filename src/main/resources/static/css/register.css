@@ -39,3 +39,26 @@ h2 {
 .btn-primary:hover {
     background-color: #0b5ed7;
 }
+
+.alert-box {
+        background-color: #f44336; /* merah */
+        color: white;
+        padding: 15px 20px;
+        margin-bottom: 15px;
+        border-radius: 5px;
+        font-size: 14px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        position: relative;
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+    .alert-box::before {
+        content: "⚠️ ";
+        font-weight: bold;
+        margin-right: 5px;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }

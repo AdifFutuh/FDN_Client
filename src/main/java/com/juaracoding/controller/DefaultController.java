@@ -15,4 +15,9 @@ public class DefaultController {
         model.addAttribute("userDTO", new ValUserDTO());
         return ConstantPage.REGIS_PAGE;
     }
+
+    @GetMapping("/home")
+    public String goToHome(Model model) {
+        return ConstantPage.HOME_PAGE;
+    }
 }
