@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Map;
 
@@ -28,5 +29,6 @@ public interface AuthService {
     public ResponseEntity<Object> verifyRegis(@Valid @RequestBody ValVerifyRegisDTO verifyRegisDTO);
 
     @PostMapping("/resend-otp")
-    public ResponseEntity<Object> resendOtp(@RequestBody Map<String, String> requestBody);
+    ResponseEntity<Object> resendOtp(@RequestParam("email") String email);
+
 }

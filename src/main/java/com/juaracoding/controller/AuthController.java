@@ -4,10 +4,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.juaracoding.dto.reference.RefAccessDTO;
 import com.juaracoding.dto.response.ErrorResponseDTO;
+import com.juaracoding.dto.validation.ValLoginDTO;
 import com.juaracoding.dto.validation.ValUserDTO;
 import com.juaracoding.dto.validation.ValVerifyRegisDTO;
 import com.juaracoding.httpservice.AuthService;
 import com.juaracoding.utils.ConstantPage;
+import com.juaracoding.utils.GenerateStringMenu;
 import feign.FeignException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +21,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -33,9 +37,10 @@ public class AuthController {
     @PostMapping("/regis")
     public String regis(
             Model model,
-            @Valid @ModelAttribute("verifyRegisDTO") ValUserDTO valUserDTO,
+            @Valid @ModelAttribute("userDTO") ValUserDTO valUserDTO,
             BindingResult result,
-            WebRequest webRequest
+            WebRequest webRequest,
+            RedirectAttributes redirectAttributes
     ) {
         String menuNavBar = "";
         try {
@@ -51,8 +56,8 @@ public class AuthController {
                 ValVerifyRegisDTO verifyRegisDTO = new ValVerifyRegisDTO();
                 verifyRegisDTO.setEmail(valUserDTO.getEmail());
 
-                model.addAttribute("verifyRegisDTO", verifyRegisDTO);
-                return ConstantPage.VERIFY_OTP;
+                redirectAttributes.addFlashAttribute("verifyRegisDTO", verifyRegisDTO);
+                return "redirect:/verify-regis";
             }
 
 
@@ -72,7 +77,9 @@ public class AuthController {
                     return ConstantPage.REGIS_PAGE;
                 }
                 if ("authFVReg002".equals(errorCode)) {
-                    return ConstantPage.SUCCESS_PAGE;
+                    model.addAttribute("error", message);
+                    model.addAttribute("userDTO", new ValUserDTO());
+                    return ConstantPage.REGIS_PAGE;
                 }
                 if ("authFVReg003".equals(errorCode)) {
                     model.addAttribute("error", "Email Sudah terdaftar silahkan verifikasi OTP dahulu");
@@ -96,9 +103,11 @@ public class AuthController {
     @PostMapping("/verify-regis")
     public String verifyRegis(
             Model model,
-            @Valid @ModelAttribute("userDTO") ValVerifyRegisDTO verifyRegisDTO,
+            @Valid @ModelAttribute("verifyRegisDTO") ValVerifyRegisDTO verifyRegisDTO,
             BindingResult result,
-            WebRequest webRequest
+            WebRequest webRequest,
+            RedirectAttributes redirectAttributes
+
     ) {
         String menuNavBar = "";
         try {
@@ -107,10 +116,11 @@ public class AuthController {
             Map<String, Object> responseBody = (Map<String, Object>) response.getBody();
 
             boolean success = (Boolean) responseBody.get("success");
-            model.addAttribute("title", "Akun Teregistrasi");
-            model.addAttribute("message", "Selamat Akun Anda Berhasil DiBuat!!");
-            model.addAttribute("buttonText", "Ke Beranda");
-            model.addAttribute("success", success);
+            redirectAttributes.addFlashAttribute("title", "Akun Teregistrasi");
+            redirectAttributes.addFlashAttribute("message", "Selamat Akun Anda Berhasil DiBuat!!");
+            redirectAttributes.addFlashAttribute("buttonText", "Masuk");
+            redirectAttributes.addFlashAttribute("buttonLink", "/login");
+            redirectAttributes.addFlashAttribute("success", success);
         } catch (FeignException e) {
             try {
                 String responseJson = e.contentUTF8();
@@ -119,16 +129,21 @@ public class AuthController {
                 });
 
                 String errorCode = (String) responseBody.get("error-code");
-                model.addAttribute("error", responseBody.get("message"));
+                redirectAttributes.addFlashAttribute("error", responseBody.get("message"));
 
-                if ("authFVReg001".equals(errorCode)) {
-                    return ConstantPage.LOGIN_PAGE;
+                redirectAttributes.addFlashAttribute("verifyRegisDTO", verifyRegisDTO);
+
+                if ("authFVOtp01".equals(errorCode)) {
+                    redirectAttributes.addFlashAttribute("error", responseBody.get("message"));
+                    return "redirect:/verify-regis";
                 }
-                if ("authFVReg002".equals(errorCode)) {
-                    return ConstantPage.SUCCESS_PAGE;
+                if ("authFVOtp02".equals(errorCode)) {
+                    redirectAttributes.addFlashAttribute("error", responseBody.get("message"));
+                    return "redirect:/verify-regis";
                 }
-                if ("authFVReg003".equals(errorCode)) {
-                    return ConstantPage.SUCCESS_PAGE;
+                if ("authFVOtp03".equals(errorCode)) {
+                    redirectAttributes.addFlashAttribute("error", responseBody.get("message"));
+                    return "redirect:/verify-regis";
                 }
             } catch (IOException jsonException) {
                 jsonException.printStackTrace();
@@ -136,7 +151,80 @@ public class AuthController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return ConstantPage.SUCCESS_PAGE;
+        return "redirect:/success-regis";
+    }
+
+
+    @PostMapping("/resend-otp")
+    public String resendOtp(
+            Model model,
+            @ModelAttribute("verifyRegisDTO") ValVerifyRegisDTO verifyRegisDTO,
+            WebRequest webRequest,
+            RedirectAttributes redirectAttributes
+
+    ) {
+        try {
+            ResponseEntity<Object> response = authService.resendOtp(verifyRegisDTO.getEmail());
+
+            Map<String, Object> responseBody = (Map<String, Object>) response.getBody();
+            boolean success = (Boolean) responseBody.get("success");
+
+            model.addAttribute("success", success);
+            model.addAttribute("verifyRegisDTO", verifyRegisDTO); // penting biar email tetap terisi
+            model.addAttribute("info", "Kode OTP berhasil dikirim ulang ke email.");
+
+        } catch (FeignException e) {
+            model.addAttribute("error", "Gagal mengirim ulang OTP. Coba beberapa saat lagi.");
+            model.addAttribute("verifyRegisDTO", verifyRegisDTO);
+        }
+
+        redirectAttributes.addFlashAttribute("verifyRegisDTO", verifyRegisDTO);
+        return "redirect:/verify-regis";
+    }
+
+
+    @PostMapping("/login")
+    public String login(
+            Model model,
+            @ModelAttribute("loginDTO") ValLoginDTO loginDTO,
+            WebRequest webRequest,
+            RedirectAttributes redirectAttributes
+    ) {
+        try {
+            ResponseEntity<Object> response = null;
+            String tokenJwt = "";
+            String menuNavBar = "";
+
+            try {
+                response = authService.login(loginDTO);
+
+                if (response.getStatusCode().is2xxSuccessful()) {
+                    Map<String, Object> map = (Map<String, Object>) response.getBody();
+                    Map<String, Object> data = (Map<String, Object>) map.get("data");
+                    List<Map<String, Object>> ltMenu = (List<Map<String, Object>>) data.get("menu");
+                    menuNavBar = new GenerateStringMenu().stringMenu(ltMenu);
+                    tokenJwt = (String) data.get("token");
+
+//                    // Simpan data ke model/session jika perlu
+//                    webRequest.setAttribute("MENU_NAVBAR", menuNavBar, WebRequest.SCOPE_SESSION);
+//                    webRequest.setAttribute("JWT", tokenJwt, WebRequest.SCOPE_SESSION);
+//                    webRequest.setAttribute("USR_NAME", loginDTO.getUsername(), WebRequest.SCOPE_SESSION);
+//                    webRequest.setAttribute("PASSWORD", loginDTO.getPassword(), WebRequest.SCOPE_SESSION);
+
+                    return "redirect:/home"; // ✅ Sukses login
+                } else {
+                    redirectAttributes.addFlashAttribute("error", "Login gagal: status tidak sukses.");
+                    return "redirect:/login"; // ❌ Gagal login
+                }
+            } catch (Exception e) {
+                // Misal error karena username/password salah atau server error
+                redirectAttributes.addFlashAttribute("error", "Login gagal: " + e.getMessage());
+                return "redirect:/login";
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
