@@ -5,8 +5,8 @@
             <img th:src="@{/image/fdn-logo.png}" alt="Logo" width="120" height="120" class="d-inline-block align-top">
         </a>
 
-        <!-- Hamburger button (mobile view) -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        <!-- Hamburger button -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -31,12 +31,16 @@
             </ul>
         </div>
 
-        <!-- Tombol login/logout -->
-        <div class="d-none d-lg-block">
-            <a th:if="${USR_NAME == null}" class="btn btn-outline-primary" th:href="@{/login}">
+        <!-- Tombol login/logout dan nama user -->
+        <div class="d-none d-lg-block d-flex align-items-center">
+            <span th:if="${USR_NAME != null}" class="mr-3 font-weight-bold text-primary">
+                Selamat datang, <span th:text="${USR_NAME}">User</span>
+            </span>
+
+            <a th:if="${USR_NAME == null}" class="btn btn-outline-primary mr-2" th:href="@{/login}">
                 Masuk
             </a>
-            <a th:if="${USR_NAME == null}" class="btn btn-outline-secondary" th:href="@{/register}">
+            <a th:if="${USR_NAME == null}" class="btn btn-outline-secondary mr-2" th:href="@{/register}">
                 Daftar
             </a>
 

@@ -5,23 +5,38 @@ import java.util.Map;
 
 public class GenerateStringMenu {
 
-    private StringBuilder sBuilder = new StringBuilder();
+    public String stringMenu(List<Map<String, Object>> lt) {
+        StringBuilder sBuilder = new StringBuilder();
 
-    public String stringMenu(List<Map<String,Object>> lt){
-        sBuilder.setLength(0);
-        for(Map<String,Object> map : lt){
+        for (Map<String, Object> map : lt) {
+            String group = (String) map.get("group");
+            List<Map<String, Object>> subMenu = (List<Map<String, Object>>) map.get("subMenu");
 
+            // Mulai dropdown menu
+            sBuilder.append("<li class=\"nav-item dropdown\">")
+                    .append("<a class=\"nav-link dropdown-toggle\" href=\"#\" id=\"dropdown")
+                    .append(group.replaceAll("\\s+", ""))
+                    .append("\" role=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">")
+                    .append(group)
+                    .append("</a>");
 
-            sBuilder.append("<li><a href=\"#\">"+map.get("group")+"</a>")//ini adalah menu header nya - pembuka
-                    .append("<ul class=\"dropdown\">");
-            List<Map<String,Object>> subMenu = (List<Map<String, Object>>) map.get("subMenu");
-            for(Map<String,Object> subMenuMap : subMenu){
-                sBuilder.append("<li><a href=\""+subMenuMap.get("path")+"\">").
-                        append(subMenuMap.get("nama").toString()).append("</a></li>");
+            // Isi dari dropdown menu
+            sBuilder.append("<div class=\"dropdown-menu\" aria-labelledby=\"dropdown")
+                    .append(group.replaceAll("\\s+", ""))
+                    .append("\">");
+
+            for (Map<String, Object> subMenuMap : subMenu) {
+                sBuilder.append("<a class=\"dropdown-item\" href=\"")
+                        .append(subMenuMap.get("path"))
+                        .append("\">")
+                        .append(subMenuMap.get("nama"))
+                        .append("</a>");
             }
-            sBuilder.append("</ul></li>");//ini adalah menu header nya - penutup
+
+            sBuilder.append("</div>") // penutup dropdown-menu
+                    .append("</li>"); // penutup nav-item
         }
-        String strMenu = sBuilder.toString();
-        return strMenu;
+
+        return sBuilder.toString();
     }
 }

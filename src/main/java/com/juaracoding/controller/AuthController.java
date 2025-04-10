@@ -11,12 +11,15 @@ import com.juaracoding.httpservice.AuthService;
 import com.juaracoding.utils.ConstantPage;
 import com.juaracoding.utils.GenerateStringMenu;
 import feign.FeignException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -188,6 +191,7 @@ public class AuthController {
             Model model,
             @ModelAttribute("loginDTO") ValLoginDTO loginDTO,
             WebRequest webRequest,
+            HttpServletRequest request,
             RedirectAttributes redirectAttributes
     ) {
         try {
@@ -205,16 +209,15 @@ public class AuthController {
                     menuNavBar = new GenerateStringMenu().stringMenu(ltMenu);
                     tokenJwt = (String) data.get("token");
 
-//                    // Simpan data ke model/session jika perlu
-//                    webRequest.setAttribute("MENU_NAVBAR", menuNavBar, WebRequest.SCOPE_SESSION);
-//                    webRequest.setAttribute("JWT", tokenJwt, WebRequest.SCOPE_SESSION);
-//                    webRequest.setAttribute("USR_NAME", loginDTO.getUsername(), WebRequest.SCOPE_SESSION);
-//                    webRequest.setAttribute("PASSWORD", loginDTO.getPassword(), WebRequest.SCOPE_SESSION);
+                    webRequest.setAttribute("MENU_NAVBAR", menuNavBar, WebRequest.SCOPE_SESSION);
+                    webRequest.setAttribute("JWT", tokenJwt, WebRequest.SCOPE_SESSION);
+                    webRequest.setAttribute("USR_NAME", loginDTO.getUsername(), WebRequest.SCOPE_SESSION);
 
-                    return "redirect:/home"; // ✅ Sukses login
+
+                    return "redirect:/home";
                 } else {
                     redirectAttributes.addFlashAttribute("error", "Login gagal: status tidak sukses.");
-                    return "redirect:/login"; // ❌ Gagal login
+                    return "redirect:/login";
                 }
             } catch (Exception e) {
                 // Misal error karena username/password salah atau server error
@@ -225,6 +228,12 @@ public class AuthController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @GetMapping("/logout")
+    public String destroySession(HttpServletRequest request){
+        request.getSession().invalidate();
+        return "redirect:/";
     }
 
 }

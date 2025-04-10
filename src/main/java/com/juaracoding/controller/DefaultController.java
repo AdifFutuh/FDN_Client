@@ -4,6 +4,7 @@ import com.juaracoding.dto.validation.ValLoginDTO;
 import com.juaracoding.dto.validation.ValUserDTO;
 import com.juaracoding.dto.validation.ValVerifyRegisDTO;
 import com.juaracoding.utils.ConstantPage;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,8 +38,12 @@ public class DefaultController {
     }
 
     @GetMapping("/home")
-    public String goToHome(Model model) {
-        return ConstantPage.HOME_PAGE;
+    public String home(HttpServletRequest request, Model model) {
+        String user = (String) request.getSession().getAttribute("USR_NAME");
+        String menuNavbar = (String) request.getSession().getAttribute("MENU_NAVBAR");
+        model.addAttribute("USR_NAME", user);
+        model.addAttribute("MENU_NAVBAR", menuNavbar);
+        return "home";
     }
 
     @GetMapping("/login")
