@@ -23,7 +23,7 @@ public class RespUserDTO {
 
     private Integer umur;
 
-    private String pathImage;
-
-    private String linkImage;
+//    private String pathImage = null;
+//
+//    private String linkImage;
 }
