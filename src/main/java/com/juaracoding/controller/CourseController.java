@@ -27,4 +27,6 @@ public class CourseController {
             return "redirect:/courses";
         }
     }
+
+    @PostMapping("/")
 }

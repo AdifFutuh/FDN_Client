@@ -14,6 +14,7 @@ public class ConstantPage {
 
 
     public static final String LIST_COURSE = "/course/daftar-kursus";
+    public static final String LIST_DETAIL_COURSE = "/course/daftar-detail-kursus";
     public static final String LIST_USER = "/user/daftar-pengguna";
 
 }
