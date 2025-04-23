@@ -31,7 +31,6 @@
             <th>ID</th>
             <th>Nama</th>
             <th>Deskripsi</th>
-            <th>Jumlah Siswa</th>
             <th>Tindakan</th> <!-- Kolom tambahan -->
         </tr>
         </thead>
@@ -40,14 +39,11 @@
             <td th:text="${course.id}">1</td>
             <td th:text="${course.nama}">Belajar bahasa arab</td>
             <td th:text="${course.deskripsi}">albahlul</td>
-            <td th:text="${course.jumlahSiswa}">0</td>
             <td>
                 <a class="btn btn-sm btn-info"
                    th:href="@{'/detail-course-manage/' + ${course.nama} + '?page=0&idCourse=' + ${course.id}}">
                     Lihat Detail
                 </a>
-
-
             </td>
         </tr>
         </tbody>

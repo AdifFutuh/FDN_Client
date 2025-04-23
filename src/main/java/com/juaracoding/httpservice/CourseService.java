@@ -4,9 +4,12 @@ import com.juaracoding.config.FeignClientConfig;
 
 import com.juaracoding.dto.validation.ValCourseDTO;
 import com.juaracoding.dto.validation.ValDetailCourseDTO;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @FeignClient(
         name = "course-services",
@@ -73,4 +76,9 @@ public interface CourseService {
 //    ResponseEntity<Object> findAllMapUserDetailCourseInfo(
 //            @RequestHeader("Authorization") String token
 //    );
+
+    @GetMapping("/my-course/{id}")
+    public ResponseEntity<Object> findEnrollmentCourse(
+            @PathVariable(value = "id") Long id
+    );
 }

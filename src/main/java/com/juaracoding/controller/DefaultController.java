@@ -38,7 +38,25 @@ public class DefaultController {
         String menuNavbar = (String) request.getSession().getAttribute("MENU_NAVBAR");
         model.addAttribute("USR_NAME", user);
         model.addAttribute("MENU_NAVBAR", menuNavbar);
-        return "home";
+        return ConstantPage.HOME_PAGE;
+    }
+
+    @GetMapping("/contact-us")
+    public String contactUs(HttpServletRequest request, Model model){
+        String user = (String) request.getSession().getAttribute("USR_NAME");
+        String menuNavbar = (String) request.getSession().getAttribute("MENU_NAVBAR");
+        model.addAttribute("USR_NAME", user);
+        model.addAttribute("MENU_NAVBAR", menuNavbar);
+        return ConstantPage.CONTACT_US;
+    }
+
+    @GetMapping("about-us")
+    public String aboutUs(HttpServletRequest request, Model model){
+        String user = (String) request.getSession().getAttribute("USR_NAME");
+        String menuNavbar = (String) request.getSession().getAttribute("MENU_NAVBAR");
+        model.addAttribute("USR_NAME", user);
+        model.addAttribute("MENU_NAVBAR", menuNavbar);
+        return ConstantPage.ABOUT_US;
     }
 
     @GetMapping("/register")
@@ -143,6 +161,47 @@ public class DefaultController {
 
     @GetMapping("/courses")
     public String goToCourseList(
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            HttpServletRequest request,
+            Model model
+    ) {
+        String user = (String) request.getSession().getAttribute("USR_NAME");
+        String menuNavbar = (String) request.getSession().getAttribute("MENU_NAVBAR");
+
+        model.addAttribute("USR_NAME", user);
+        model.addAttribute("MENU_NAVBAR", menuNavbar);
+
+        // Feign call dengan parameter page
+        ResponseEntity<Object> response = courseService.findAllCourse(page);
+
+        Map<String, Object> responseBody = (Map<String, Object>) response.getBody();
+        boolean success = (Boolean) responseBody.get("success");
+
+        if (success) {
+            Map<String, Object> data = (Map<String, Object>) responseBody.get("data");
+            List<Map<String, Object>> content = (List<Map<String, Object>>) data.get("content");
+
+            List<RespCourseDTO> courseList = content.stream().map(item -> {
+                RespCourseDTO dto = new RespCourseDTO();
+                dto.setId(Long.valueOf(item.get("id").toString()));
+                dto.setNama(item.get("nama").toString());
+                dto.setDeskripsi(item.get("deskripsi").toString());
+                dto.setJumlahSiswa(Integer.parseInt(item.get("jumlahSiswa").toString()));
+                return dto;
+            }).toList();
+
+            ValCourseDTO course = new ValCourseDTO();
+            model.addAttribute("courseList", courseList);
+            model.addAttribute("totalPages", data.get("total-pages"));
+            model.addAttribute("currentPage", data.get("current-page"));
+            model.addAttribute("courseDTO", course);
+        }
+
+        return ConstantPage.LIST_COURSE;
+    }
+
+    @GetMapping("/my-course")
+    public String goToMyCourseList(
             @RequestParam(value = "page", defaultValue = "0") Integer page,
             HttpServletRequest request,
             Model model

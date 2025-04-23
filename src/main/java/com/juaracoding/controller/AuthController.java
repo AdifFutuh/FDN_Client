@@ -12,7 +12,6 @@ import com.juaracoding.utils.ConstantPage;
 import com.juaracoding.utils.GenerateStringMenu;
 import feign.FeignException;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -195,7 +194,7 @@ public class AuthController {
             RedirectAttributes redirectAttributes
     ) {
         try {
-            ResponseEntity<Object> response = null;
+            ResponseEntity<Object> response;
             String tokenJwt = "";
             String menuNavBar = "";
 
@@ -209,10 +208,21 @@ public class AuthController {
                     menuNavBar = new GenerateStringMenu().stringMenu(ltMenu);
                     tokenJwt = (String) data.get("token");
 
+                    // Simpan session dasar
                     webRequest.setAttribute("MENU_NAVBAR", menuNavBar, WebRequest.SCOPE_SESSION);
                     webRequest.setAttribute("JWT", tokenJwt, WebRequest.SCOPE_SESSION);
                     webRequest.setAttribute("USR_NAME", loginDTO.getUsername(), WebRequest.SCOPE_SESSION);
 
+                    // Simpan ID user ke session (pastikan key "id" ada di response "data")
+                    Long userId = Long.valueOf(data.get("id").toString());
+                    webRequest.setAttribute("USR_ID", userId, WebRequest.SCOPE_SESSION);
+
+                    // Cek apakah user adalah admin
+                    boolean isAdmin = ltMenu.stream()
+                            .flatMap(group -> ((List<Map<String, Object>>) group.get("subMenu")).stream())
+                            .anyMatch(sub -> "Dashboard Admin".equalsIgnoreCase((String) sub.get("nama")));
+
+                    webRequest.setAttribute("IS_ADMIN", isAdmin, WebRequest.SCOPE_SESSION);
 
                     return "redirect:/home";
                 } else {
@@ -220,7 +230,6 @@ public class AuthController {
                     return "redirect:/login";
                 }
             } catch (Exception e) {
-                // Misal error karena username/password salah atau server error
                 redirectAttributes.addFlashAttribute("error", "Login gagal: " + e.getMessage());
                 return "redirect:/login";
             }
@@ -229,6 +238,8 @@ public class AuthController {
             throw new RuntimeException(e);
         }
     }
+
+
 
     @GetMapping("/logout")
     public String destroySession(HttpServletRequest request){
