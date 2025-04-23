@@ -43,9 +43,11 @@
             <td th:text="${course.jumlahSiswa}">0</td>
             <td>
                 <a class="btn btn-sm btn-info"
-                   th:href="@{'/detail-course-manage/' + ${course.nama} + '?page=0'}">
+                   th:href="@{'/detail-course-manage/' + ${course.nama} + '?page=0&idCourse=' + ${course.id}}">
                     Lihat Detail
                 </a>
+
+
             </td>
         </tr>
         </tbody>

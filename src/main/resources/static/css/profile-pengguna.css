@@ -1,0 +1,35 @@
+body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+
+        .profile {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 12px;
+            max-width: 700px;
+        }
+
+        .profile h2 {
+            margin-bottom: 10px;
+        }
+
+        .course-progress {
+            margin-top: 20px;
+        }
+
+        .course-progress table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .course-progress th,
+        .course-progress td {
+            border: 1px solid #aaa;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .course-progress th {
+            background-color: #f0f0f0;
+        }

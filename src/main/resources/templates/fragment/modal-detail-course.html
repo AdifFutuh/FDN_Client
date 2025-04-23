@@ -9,7 +9,7 @@
             </div>
 
             <div class="modal-body">
-                <form id="formTambahDetailKursus" th:action="@{/detail-course}" method="post" th:object="${detailCourseDTO}">
+                <form id="formTambahDetailKursus" th:action="@{/course/add-detail-course}" method="post" th:object="${detailCourseDTO}">
                     <div class="form-group">
                         <label for="judul" class="col-form-label">Judul:</label>
                         <input type="text" class="form-control" id="judul" th:field="*{judul}" required>
@@ -24,6 +24,11 @@
                         <label for="urutan" class="col-form-label">Urutan:</label>
                         <input type="number" class="form-control" id="urutan" th:field="*{urutan}" min="1" required>
                     </div>
+                    <input type="hidden" th:field="*{idCourse}" th:value="${idCourse}" />
+
+                    <input type="hidden" name="courseName" th:value="${courseName}" />
+                    <input type="hidden" name="page" th:value="${currentPage}" />
+
                 </form>
             </div>
 

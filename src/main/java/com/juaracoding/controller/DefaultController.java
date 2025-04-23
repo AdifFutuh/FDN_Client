@@ -1,12 +1,10 @@
 package com.juaracoding.controller;
 
+import com.juaracoding.dto.reference.RefCourseDTO;
 import com.juaracoding.dto.response.RespCourseDTO;
 import com.juaracoding.dto.response.RespDetailCourseDTO;
 import com.juaracoding.dto.response.RespUserDTO;
-import com.juaracoding.dto.validation.ValCourseDTO;
-import com.juaracoding.dto.validation.ValDetailCourseDTO;
-import com.juaracoding.dto.validation.ValLoginDTO;
-import com.juaracoding.dto.validation.ValUserDTO;
+import com.juaracoding.dto.validation.*;
 import com.juaracoding.httpservice.CourseService;
 import com.juaracoding.httpservice.UserService;
 import com.juaracoding.utils.ConstantPage;
@@ -86,27 +84,25 @@ public class DefaultController {
         model.addAttribute("USR_NAME", user);
         model.addAttribute("MENU_NAVBAR", menuNavbar);
 
-        // Feign call dengan parameter page
+        // Ambil data user
         ResponseEntity<Object> response = userService.findAllByParam("asc", "id", page, 5, "akses", "3");
 
         Map<String, Object> responseBody = (Map<String, Object>) response.getBody();
-        boolean success = (Boolean) responseBody.get("success");
+        boolean success = Boolean.TRUE.equals(responseBody.get("success"));
 
-        if (success) {
+        if (success && responseBody.containsKey("data")) {
             Map<String, Object> data = (Map<String, Object>) responseBody.get("data");
             List<Map<String, Object>> content = (List<Map<String, Object>>) data.get("content");
 
             List<RespUserDTO> userList = content.stream().map(item -> {
                 RespUserDTO dto = new RespUserDTO();
-                dto.setId(Long.parseLong(item.get("id").toString()));
-                dto.setNama(item.get("nama").toString());
-                dto.setEmail(item.get("email").toString());
-                dto.setUsername(item.get("username").toString());
-                dto.setAlamat(item.get("alamat").toString());
-                dto.setTanggalLahir(LocalDate.parse(item.get("tanggalLahir").toString()));
-                dto.setUmur(Integer.valueOf(item.get("umur").toString()));
-                dto.setNoHp(item.get("noHp").toString());
-
+                dto.setId(item.get("id") != null ? Long.parseLong(item.get("id").toString()) : 0L);
+                dto.setNama(item.get("nama") != null ? item.get("nama").toString() : "");
+                dto.setEmail(item.get("email") != null ? item.get("email").toString() : "");
+                dto.setUsername(item.get("username") != null ? item.get("username").toString() : "");
+                dto.setAlamat(item.get("alamat") != null ? item.get("alamat").toString() : "");
+                dto.setTanggalLahir(item.get("tanggalLahir") != null ? LocalDate.parse(item.get("tanggalLahir").toString()) : null);
+                dto.setNoHp(item.get("noHp") != null ? item.get("noHp").toString() : "");
                 return dto;
             }).toList();
 
@@ -115,8 +111,35 @@ public class DefaultController {
             model.addAttribute("currentPage", data.get("current-page"));
         }
 
+        // Ambil data course
+        ResponseEntity<Object> response2 = courseService.findAllCourseAsAdmin();
+        Map<String, Object> responseBody2 = (Map<String, Object>) response2.getBody();
+        boolean success2 = Boolean.TRUE.equals(responseBody2.get("success"));
+
+        if (success2 && responseBody2.containsKey("data")) {
+            Map<String, Object> data = (Map<String, Object>) responseBody2.get("data");
+            List<Map<String, Object>> content = (List<Map<String, Object>>) data.get("content");
+
+            List<RespCourseDTO> courseList = content.stream().map(item -> {
+                RespCourseDTO dto = new RespCourseDTO();
+                dto.setId(item.get("id") != null ? Long.parseLong(item.get("id").toString()) : 0L);
+                dto.setNama(item.get("nama") != null ? item.get("nama").toString() : "");
+                dto.setDeskripsi(item.get("deskripsi") != null ? item.get("deskripsi").toString() : "");
+                dto.setJumlahSiswa(item.get("jumlahSiswa") != null ? Long.parseLong(item.get("jumlahSiswa").toString()) : 0L);
+                return dto;
+            }).toList();
+
+            model.addAttribute("courseList", courseList);
+            ValUserCourseProgressForm userCourse = new ValUserCourseProgressForm();
+            model.addAttribute("userCourseProgressForm", userCourse);
+        }
+
         return ConstantPage.LIST_USER;
     }
+
+
+
+
 
     @GetMapping("/courses")
     public String goToCourseList(
@@ -164,6 +187,7 @@ public class DefaultController {
     public String goToDetailCourseListById(
             @PathVariable("courseName") String courseName,
             @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam("idCourse") Integer idCourse,
             HttpServletRequest request,
             Model model
     ) {
@@ -172,6 +196,8 @@ public class DefaultController {
 
         model.addAttribute("USR_NAME", user);
         model.addAttribute("MENU_NAVBAR", menuNavbar);
+        model.addAttribute("courseName", courseName);
+
         // Feign call dengan parameter page
         ResponseEntity<Object> response = courseService.findDetailCourseByCourse(page, 10, "course", courseName);
 
@@ -191,9 +217,10 @@ public class DefaultController {
                 return dto;
             }).toList();
 
-            ValDetailCourseDTO detailCourse = new ValDetailCourseDTO();
+
+            ValDetailCourseForm detailCourse = new ValDetailCourseForm();
+            detailCourse.setIdCourse(idCourse);
             model.addAttribute("detailCourseList", detailCourseList);
-            model.addAttribute("courseId", data.get("id-course"));
             model.addAttribute("totalPages", data.get("total-pages"));
             model.addAttribute("currentPage", data.get("current-page"));
             model.addAttribute("detailCourseDTO", detailCourse);

@@ -1,11 +1,14 @@
 package com.juaracoding.dto.response;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 
-@Data
-public class RespUserDTO {
+@Getter
+@Setter
+public class RespUserProfile {
 
     private long id;
 
@@ -21,8 +24,5 @@ public class RespUserDTO {
 
     private LocalDate tanggalLahir;
 
-
-//    private String pathImage = null;
-//
-//    private String linkImage;
+    private List<RespUserCourseProgressDTO> courseProgressList;
 }

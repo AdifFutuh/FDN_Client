@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Profil Pengguna</title>
+</head>
+<body>
+
+<div class="profile">
+    <h2 th:text="'Profil: ' + ${userProfile.nama}"></h2>
+    <p><strong>Username:</strong> <span th:text="${userProfile.username}"></span></p>
+    <p><strong>Email:</strong> <span th:text="${userProfile.email}"></span></p>
+    <p><strong>Alamat:</strong> <span th:text="${userProfile.alamat}"></span></p>
+    <p><strong>No HP:</strong> <span th:text="${userProfile.noHp}"></span></p>
+    <p><strong>Tanggal Lahir:</strong> <span th:text="${userProfile.tanggalLahir}"></span></p>
+
+    <div class="course-progress">
+        <h3>Progress Kursus</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>ID Kursus</th>
+                <th>Nama Kursus</th>
+                <th>Persentase</th>
+                <th>Dibuat</th>
+                <th>Terakhir Diperbarui</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="progress : ${userProfile.courseProgressList}">
+                <td th:text="${progress.courseId}"></td>
+                <td th:text="${progress.courseName}"></td>
+                <td th:text="${progress.persentase} + '%'"></td>
+                <td th:text="${progress.createdDate}"></td>
+                <td th:text="${progress.updateTime}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

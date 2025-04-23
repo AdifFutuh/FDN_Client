@@ -3,7 +3,7 @@ package com.juaracoding.httpservice;
 import com.juaracoding.config.FeignClientConfig;
 
 import com.juaracoding.dto.validation.ValCourseDTO;
-import jakarta.servlet.http.HttpServletRequest;
+import com.juaracoding.dto.validation.ValDetailCourseDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,13 +15,16 @@ import org.springframework.web.bind.annotation.*;
 )
 public interface CourseService {
 
+    @GetMapping("/all-course-list")
+    ResponseEntity<Object>findAllCourseAsAdmin();
+
     @GetMapping("/course-list/{page}")
     ResponseEntity<Object> findAllCourse(
             @PathVariable(value = "page") Integer page
     );
 
     @GetMapping("/dtl/{id}")
-    public ResponseEntity<Object> findCourseById(
+    ResponseEntity<Object> findCourseById(
             @PathVariable(value = "id") Long id);
 
     @GetMapping("/{sort}/{sortBy}/{page}")
@@ -45,12 +48,11 @@ public interface CourseService {
 //            @RequestHeader("Authorization") String token
 //    );
 //
-//    @PostMapping("/add-detail")
-//    ResponseEntity<Object> addDetailCourse(
-//            @Valid @RequestBody ValDetailCourseDTO detailCourseDTO,
-//            @RequestHeader("Authorization") String token
-//    );
-//
+    @PostMapping("/add-detail")
+    ResponseEntity<Object> addDetailCourse(
+            @RequestBody ValDetailCourseDTO detailCourseDTO
+    );
+
     @GetMapping("/detail-course/{page}")
     ResponseEntity<Object> findDetailCourseByCourse(
             @PathVariable("page") Integer page,

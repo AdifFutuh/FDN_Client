@@ -32,8 +32,8 @@
             <th>Username</th>
             <th>Alamat</th>
             <th>Tanggal Lahir</th>
-            <th>Umur</th>
             <th>No HP</th>
+            <th>Aksi</th> <!-- Kolom tambahan -->
         </tr>
         </thead>
         <tbody>
@@ -44,11 +44,24 @@
             <td th:text="${user.username}">username123</td>
             <td th:text="${user.alamat}">Jl. Raya</td>
             <td th:text="${user.tanggalLahir}">2000-01-01</td>
-            <td th:text="${user.umur}">24</td>
             <td th:text="${user.noHp}">08123456789</td>
+            <td>
+                <button type="button"
+                        class="btn btn-sm btn-primary"
+                        data-toggle="modal"
+                        data-target="#modalListCourse"
+                        th:attr="data-user-id=${user.id}">
+                    Pilih Course
+                </button>
 
+                <a th:href="@{'/users/profile/' + ${user.id}}"
+                   class="btn btn-sm btn-secondary">
+                    Profil
+                </a>
+            </td>
         </tr>
         </tbody>
+
     </table>
 
 
@@ -71,19 +84,34 @@
     </nav>
 
 </div>
+<!-- Menyisipkan fragment modal -->
+<div th:replace="~{fragment/modal-list-course :: modalCourseList}"></div>
 
-<!-- Modal Tambah Course akan ditambahkan nanti di sini -->
-<!-- Modal -->
+
 
 <script th:src="@{/webjars/jquery/3.7.1/jquery.min.js}"></script>
 <script th:src="@{/webjars/bootstrap/4.6.2/js/bootstrap.bundle.min.js}"></script>
 <script>
-    $(document).ready(function () {
-        $('#btnTambahKursus').click(function () {
-            $('#formTambahKursus').submit();
-        });
+    let selectedUserId = null;
+
+    $('#modalListCourse').on('show.bs.modal', function (event) {
+        const button = $(event.relatedTarget);
+        selectedUserId = button.data('user-id');
+        // Pastikan userId dimasukkan saat modal dibuka
+        document.getElementById('userId').value = selectedUserId;
     });
+
+    function selectCourse(button) {
+        const courseId = button.getAttribute('data-course-id');
+        document.getElementById('courseId').value = courseId;
+        console.log("Course ID: " + courseId + ", User ID: " + selectedUserId);
+    }
+
+    function submitForm() {
+        document.getElementById('courseForm').submit();
+    }
 </script>
+
 
 </body>
 </html>

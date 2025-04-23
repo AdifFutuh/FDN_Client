@@ -72,6 +72,12 @@
 
 <script th:src="@{/webjars/jquery/3.7.1/jquery.min.js}"></script>
 <script th:src="@{/webjars/bootstrap/4.6.2/js/bootstrap.bundle.min.js}"></script>
-
+<script>
+    $(document).ready(function () {
+        $('#btnTambahDetailKursus').click(function () {
+            $('#formTambahDetailKursus').submit();
+        });
+    });
+</script>
 </body>
 </html>

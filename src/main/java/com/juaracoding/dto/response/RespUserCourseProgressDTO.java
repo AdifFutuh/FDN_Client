@@ -1,26 +1,17 @@
 package com.juaracoding.dto.response;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
 public class RespUserCourseProgressDTO {
-    private long id;
 
-    private String username;
-
-    private String email;
-
-    private String alamat;
-
-    private String noHp;
-
-    private String nama;
-
-    private LocalDate tanggalLahir;
-
-    private String namaCourse;
-
-    private double progres;
+    private Long courseId;
+    private String courseName;
+    private Double persentase;
+    private LocalDateTime createdDate;
+    private LocalDateTime updateTime;
 }
