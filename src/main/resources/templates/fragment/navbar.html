@@ -33,9 +33,9 @@
 
         <!-- Tombol login/logout dan nama user -->
         <div class="d-none d-lg-block d-flex align-items-center">
-            <span th:if="${USR_NAME != null}" class="mr-3 font-weight-bold text-primary">
+            <a th:if="${USR_NAME != null}" class="mr-3 font-weight-bold text-primary" th:href="@{/users/profile}">
                 Selamat datang, <span th:text="${USR_NAME}">User</span>
-            </span>
+            </a>
 
             <a th:if="${USR_NAME == null}" class="btn btn-outline-primary mr-2" th:href="@{/login}">
                 Masuk

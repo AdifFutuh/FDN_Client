@@ -3,41 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <title>Profil Pengguna</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.2/css/bootstrap.min.css}" type="text/css"/>
 </head>
 <body>
+<div th:replace="~{fragment/navbar::navheader}"></div>
 
-<div class="profile">
-    <h2 th:text="'Profil: ' + ${userProfile.nama}"></h2>
-    <p><strong>Username:</strong> <span th:text="${userProfile.username}"></span></p>
-    <p><strong>Email:</strong> <span th:text="${userProfile.email}"></span></p>
-    <p><strong>Alamat:</strong> <span th:text="${userProfile.alamat}"></span></p>
-    <p><strong>No HP:</strong> <span th:text="${userProfile.noHp}"></span></p>
-    <p><strong>Tanggal Lahir:</strong> <span th:text="${userProfile.tanggalLahir}"></span></p>
+<div class="container mt-5">
+    <div class="card mb-4">
+        <div class="card-body">
+            <h2 class="card-title" th:text="'Profil: ' + ${userProfile.nama}"></h2>
+            <p><strong>Username:</strong> <span th:text="${userProfile.username}"></span></p>
+            <p><strong>Email:</strong> <span th:text="${userProfile.email}"></span></p>
+            <p><strong>Alamat:</strong> <span th:text="${userProfile.alamat}"></span></p>
+            <p><strong>No HP:</strong> <span th:text="${userProfile.noHp}"></span></p>
+            <p><strong>Tanggal Lahir:</strong> <span th:text="${userProfile.tanggalLahir}"></span></p>
+        </div>
+    </div>
 
-    <div class="course-progress">
-        <h3>Progress Kursus</h3>
-        <table>
-            <thead>
-            <tr>
-                <th>ID Kursus</th>
-                <th>Nama Kursus</th>
-                <th>Persentase</th>
-                <th>Dibuat</th>
-                <th>Terakhir Diperbarui</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="progress : ${userProfile.courseProgressList}">
-                <td th:text="${progress.courseId}"></td>
-                <td th:text="${progress.courseName}"></td>
-                <td th:text="${progress.persentase} + '%'"></td>
-                <td th:text="${progress.createdDate}"></td>
-                <td th:text="${progress.updateTime}"></td>
-            </tr>
-            </tbody>
-        </table>
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3>Progress Kursus</h3>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-hover">
+                <thead class="thead-light">
+                <tr>
+                    <th>ID Kursus</th>
+                    <th>Nama Kursus</th>
+                    <th>Persentase</th>
+                    <th>Dibuat</th>
+                    <th>Terakhir Diperbarui</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="progress : ${userProfile.courseProgressList}">
+                    <td th:text="${progress.courseId}"></td>
+                    <td th:text="${progress.courseName}"></td>
+                    <td>
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar"
+                                 th:style="'width:' + ${progress.persentase} + '%'"
+                                 th:text="${progress.persentase} + '%'"></div>
+                        </div>
+                    </td>
+                    <td th:text="${#temporals.format(progress.createdDate, 'dd MMM yyyy HH:mm')}"></td>
+                    <td th:text="${#temporals.format(progress.updateTime, 'dd MMM yyyy HH:mm')}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3>Rangkuman Detail Kursus</h3>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-hover">
+                <thead class="thead-light">
+                <tr>
+                    <th>Username</th>
+                    <th>Nama Kursus</th>
+                    <th>Judul Materi</th>
+                    <th>Summary</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="detail : ${userProfile.userDetailCourseList}">
+                    <td th:text="${detail.username}"></td>
+                    <td th:text="${detail.namaCourse}"></td>
+                    <td th:text="${detail.judulDetailCourse}"></td>
+                    <td>
+                    <textarea class="form-control" rows="3" readonly
+                      style="resize: vertical; max-height: 150px;"
+                      th:text="${detail.summary}">Summary</textarea>
+                    </td>
+                    <td>
+                        <span class="badge"
+                              th:classappend="${detail.status} == 'APPROVED' ? 'badge-success' :
+                                               (${detail.status} == 'PENDING' ? 'badge-warning' : 'badge-secondary')"
+                              th:text="${detail.status}"></span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
+<script th:src="@{/webjars/jquery/3.7.1/jquery.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.6.2/js/bootstrap.bundle.min.js}"></script>
 </body>
 </html>

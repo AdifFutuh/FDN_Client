@@ -25,4 +25,6 @@ public class RespUserProfile {
     private LocalDate tanggalLahir;
 
     private List<RespUserCourseProgressDTO> courseProgressList;
+
+    private List<RespMapUserDetailCourseDTO> userDetailCourseList;
 }

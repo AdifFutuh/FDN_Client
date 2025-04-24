@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.2/css/bootstrap.min.css}" type="text/css"/>
+
+</head>
+<body>
+<div th:replace="~{fragment/navbar::navheader}"></div>
+<div th:if="${successMessage}" class="container alert alert-success alert-dismissible fade show mt-3" role="alert">
+    <strong>Berhasil!</strong> <span th:text="${successMessage}"></span>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Dashboard Admin</h2>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addCourseModal"
+                th:if="${session.IS_ADMIN}">
+            Tambah Kursus
+        </button>
+    </div>
+
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Nama Course</th>
+            <th>Judul Materi</th>
+            <th>Summary</th>
+            <th>Status</th>
+            <th>Tindakan</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item : ${data.content}">
+            <td th:text="${item.id}">3</td>
+            <td th:text="${item.username}">ujang123</td>
+            <td th:text="${item.namaCourse}">Belajar Bahasa Jepang</td>
+            <td th:text="${item.judulDetailCourse}">materi ke1</td>
+
+            <td>
+            <textarea class="form-control" rows="3" readonly
+                  style="resize: vertical; max-height: 150px;"
+                  th:text="${item.summary}">Summary</textarea>
+            </td>
+
+            <td th:text="${item.status}">PENDING</td>
+
+            <td>
+                <div th:switch="${item.status}">
+                    <div th:case="'PENDING'">
+                        <a class="btn btn-sm btn-success"
+                           th:href="@{'/user-course/progress/approve/' + ${item.id}}">
+                            Approve
+                        </a>
+                        <a class="btn btn-sm btn-danger"
+                           th:href="@{'/user-course/progress/reject/' + ${item.id}}">
+                            Reject
+                        </a>
+                    </div>
+                    <div th:case="'APPROVED'">
+                        <span class="badge badge-success">Sudah Disetujui</span>
+                    </div>
+                    <div th:case="'REJECTED'">
+                        <span class="badge badge-danger">Ditolak</span>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+
+    </table>
+
+
+    <!--    <nav th:if="${totalPages > 1}">-->
+    <!--        <ul class="pagination justify-content-center">-->
+    <!--            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">-->
+    <!--                <a class="page-link" th:href="@{/courses(page=${currentPage - 1})}">Previous</a>-->
+    <!--            </li>-->
+
+    <!--            <li class="page-item"-->
+    <!--                th:each="i : ${#numbers.sequence(0, totalPages - 1)}"-->
+    <!--                th:classappend="${i == currentPage} ? 'active'">-->
+    <!--                <a class="page-link" th:href="@{/courses(page=${i})}" th:text="${i + 1}">1</a>-->
+    <!--            </li>-->
+
+    <!--            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">-->
+    <!--                <a class="page-link" th:href="@{/courses(page=${currentPage + 1})}">Next</a>-->
+    <!--            </li>-->
+    <!--        </ul>-->
+    <!--    </nav>-->
+
+</div>
+
+
+<script th:src="@{/webjars/jquery/3.7.1/jquery.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.6.2/js/bootstrap.bundle.min.js}"></script>
+<script>
+    $(document).ready(function () {
+        $('#btnTambahKursus').click(function () {
+            $('#formTambahKursus').submit();
+        });
+    });
+</script>
+
+</body>
+</html>

@@ -4,6 +4,8 @@ import com.juaracoding.config.FeignClientConfig;
 import com.juaracoding.dto.validation.ValUserCourseProgressDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -15,6 +17,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface MapUserCourseService {
 
     @PostMapping
-    ResponseEntity<Object> addUserCourse(
-            @RequestBody ValUserCourseProgressDTO userCourseProgressDTO);
+    void addUserCourse(@RequestBody ValUserCourseProgressDTO userCourseProgressDTO);
+
+    @GetMapping("/progress-approve/{id}")
+    public ResponseEntity<Object> approveSummary(
+            @PathVariable(value = "id") Long id
+    );
+
+    @GetMapping("/progress-reject/{id}")
+    public ResponseEntity<Object> rejectSummary(
+            @PathVariable(value = "id") Long id
+    );
 }

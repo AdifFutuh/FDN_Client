@@ -17,8 +17,12 @@ public class ConstantPage {
 
 
     public static final String LIST_COURSE = "/course/daftar-kursus";
+    public static final String MY_COURSE = "/course/kursus-saya";
     public static final String LIST_DETAIL_COURSE = "/course/daftar-detail-kursus";
+    public static final String DETAIL_COURSE_PESERTA = "/course/detail-kursus-peserta";
     public static final String LIST_USER = "/user/daftar-pengguna";
     public static final String PROFILE_PAGE = "/user/profil-pengguna";
+
+    public static final String DASHBOARD_ADMIN = "/dashboard/dashboard-admin";
 
 }

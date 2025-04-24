@@ -11,15 +11,27 @@
 </head>
 <body>
 <div th:replace="~{fragment/navbar::navheader}"></div>
-<div class="container alert alert-warning alert-dismissible fade show" role="alert">
-    <strong>Holy guacamole!</strong> You should check in on some of those fields below.
+<div th:if="${successMessage}" class="container alert alert-success alert-dismissible fade show mt-3" role="alert">
+    <strong>Berhasil!</strong> <span th:text="${successMessage}"></span>
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
     </button>
 </div>
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Daftar Course</h2>
+        <h2>Daftar Peserta</h2>
+        <nav class="navbar navbar-light bg-light">
+            <form class="form-inline" method="get" th:action="@{/user-list/search}">
+                <input
+                        class="form-control mr-sm-2"
+                        type="search"
+                        name="nama"
+                        placeholder="Cari nama peserta"
+                        aria-label="Search"
+                >
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </nav>
 
     </div>
 
@@ -50,7 +62,8 @@
                         class="btn btn-sm btn-primary"
                         data-toggle="modal"
                         data-target="#modalListCourse"
-                        th:attr="data-user-id=${user.id}">
+                        th:attr="data-user-id=${user.id}"
+                        th:if="${session.IS_ADMIN}">
                     Pilih Course
                 </button>
 
@@ -97,7 +110,6 @@
     $('#modalListCourse').on('show.bs.modal', function (event) {
         const button = $(event.relatedTarget);
         selectedUserId = button.data('user-id');
-        // Pastikan userId dimasukkan saat modal dibuka
         document.getElementById('userId').value = selectedUserId;
     });
 

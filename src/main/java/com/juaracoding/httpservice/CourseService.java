@@ -4,12 +4,10 @@ import com.juaracoding.config.FeignClientConfig;
 
 import com.juaracoding.dto.validation.ValCourseDTO;
 import com.juaracoding.dto.validation.ValDetailCourseDTO;
-import jakarta.servlet.http.HttpServletRequest;
+import com.juaracoding.dto.validation.ValMapUserDetailCourseDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @FeignClient(
         name = "course-services",
@@ -41,7 +39,7 @@ public interface CourseService {
     );
 
     @PostMapping
-    ResponseEntity<Object> addCourse(
+    void addCourse(
             @RequestBody ValCourseDTO courseDTO
     );
 
@@ -52,7 +50,7 @@ public interface CourseService {
 //    );
 //
     @PostMapping("/add-detail")
-    ResponseEntity<Object> addDetailCourse(
+    void addDetailCourse(
             @RequestBody ValDetailCourseDTO detailCourseDTO
     );
 
@@ -63,22 +61,20 @@ public interface CourseService {
             @RequestParam("column") String column,
             @RequestParam("course") String value
     );
-//
-//    @PostMapping("/{idUser}/{idDetailCourse}")
-//    ResponseEntity<Object> addProgress(
-//            @PathVariable("idUser") long idUser,
-//            @PathVariable("idDetailCourse") long idDetailCourse,
-//            @RequestBody ValMapUserDetailCourseDTO mapUserDetailCourseDTO,
-//            @RequestHeader("Authorization") String token
-//    );
-//
-//    @GetMapping("/all-summary")
-//    ResponseEntity<Object> findAllMapUserDetailCourseInfo(
-//            @RequestHeader("Authorization") String token
-//    );
+
+    @PostMapping("/{idUser}/{idDetailCourse}")
+    ResponseEntity<Object> addProgress(
+            @PathVariable("idUser") long idUser,
+            @PathVariable("idDetailCourse") long idDetailCourse,
+            @RequestBody ValMapUserDetailCourseDTO mapUserDetailCourseDTO
+    );
+
+    @GetMapping("/all-summary")
+    ResponseEntity<Object> findAllMapUserDetailCourseInfo(
+    );
 
     @GetMapping("/my-course/{id}")
     public ResponseEntity<Object> findEnrollmentCourse(
-            @PathVariable(value = "id") Long id
+            @PathVariable(value = "id") Long idUser
     );
 }

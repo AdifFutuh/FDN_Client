@@ -19,12 +19,13 @@ public class CustomErrorController implements ErrorController {
             int statusCode = Integer.parseInt(status.toString());
 
             if (statusCode == HttpStatus.NOT_FOUND.value()) {
-                return "error/404"; // Akan cari di templates/error/404.html
+                return "error/404";
             } else if (statusCode == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
-                return "error/500"; // Optional
+                return "redirect:/login";
+            } else if (statusCode == HttpStatus.UNAUTHORIZED.value()) {
+                return "redirect:/login";
             }
         }
-
-        return "error/general"; // fallback
+        return "error/general";
     }
 }
