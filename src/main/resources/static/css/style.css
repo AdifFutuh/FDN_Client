@@ -1,0 +1,94 @@
+/* style.css - Colorful but Minimalist */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #FAFAFA;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar {
+    background-color: #ffffff !important;
+    border-bottom: 1px solid #e5e5e5;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.navbar-brand img {
+    height: 48px;
+    width: auto;
+}
+
+.navbar-nav .nav-link {
+    color: #555 !important;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    transition: color 0.3s ease-in-out;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #4F8EF7 !important;
+}
+
+.btn-outline-primary {
+    border-color: #4F8EF7;
+    color: #4F8EF7;
+}
+
+.btn-outline-primary:hover {
+    background-color: #4F8EF7;
+    color: white;
+}
+
+.btn-outline-secondary {
+    border-color: #A78BFA;
+    color: #A78BFA;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #A78BFA;
+    color: white;
+}
+
+.btn-primary {
+    background-color: #F472B6;
+    border-color: #F472B6;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #ec5ca7;
+    border-color: #ec5ca7;
+}
+
+.btn-danger {
+    background-color: #ef4444;
+    border-color: #ef4444;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #dc2626;
+    border-color: #dc2626;
+}
+
+.font-weight-bold.text-primary {
+    font-size: 0.95rem;
+    margin-right: 1rem;
+    color: #4F8EF7 !important;
+}
+
+h1 {
+    font-weight: 700;
+    font-size: 2.2rem;
+    text-align: center;
+    margin-top: 3rem;
+    color: #4F8EF7;
+}
+
+p {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #666;
+}

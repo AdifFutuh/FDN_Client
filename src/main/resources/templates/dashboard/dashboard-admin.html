@@ -5,29 +5,67 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Dashboard Admin</title>
     <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.2/css/bootstrap.min.css}" type="text/css"/>
+    <style>
+        body {
+            font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            padding-bottom: 60px;
+        }
 
+        h2 {
+            font-weight: bold;
+        }
+
+        .table-container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .table th,
+        .table td {
+            vertical-align: middle;
+        }
+
+        .btn {
+            border-radius: 0.5rem;
+        }
+
+        .alert {
+            border-radius: 0.5rem;
+        }
+
+        textarea.form-control[readonly] {
+            background-color: #f8f9fa;
+            border: 1px solid #ced4da;
+        }
+
+        .badge {
+            padding: 0.5em 0.75em;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+        }
+    </style>
 </head>
 <body>
+
 <div th:replace="~{fragment/navbar::navheader}"></div>
+
 <div th:if="${successMessage}" class="container alert alert-success alert-dismissible fade show mt-3" role="alert">
     <strong>Berhasil!</strong> <span th:text="${successMessage}"></span>
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
     </button>
 </div>
-<div class="container mt-5">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Dashboard Admin</h2>
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addCourseModal"
-                th:if="${session.IS_ADMIN}">
-            Tambah Kursus
-        </button>
-    </div>
 
-    <table class="table table-bordered table-striped">
-        <thead class="table-dark">
+<div class="container mt-5 table-container">
+
+    <table class="table table-bordered table-hover">
+        <thead class="thead-light">
         <tr>
             <th>ID</th>
             <th>Username</th>
@@ -44,19 +82,16 @@
             <td th:text="${item.username}">ujang123</td>
             <td th:text="${item.namaCourse}">Belajar Bahasa Jepang</td>
             <td th:text="${item.judulDetailCourse}">materi ke1</td>
-
             <td>
-            <textarea class="form-control" rows="3" readonly
-                  style="resize: vertical; max-height: 150px;"
-                  th:text="${item.summary}">Summary</textarea>
+                <textarea class="form-control" rows="3" readonly
+                          style="resize: vertical; max-height: 150px;"
+                          th:text="${item.summary}">Summary</textarea>
             </td>
-
             <td th:text="${item.status}">PENDING</td>
-
             <td>
                 <div th:switch="${item.status}">
                     <div th:case="'PENDING'">
-                        <a class="btn btn-sm btn-success"
+                        <a class="btn btn-sm btn-success mb-1"
                            th:href="@{'/user-course/progress/approve/' + ${item.id}}">
                             Approve
                         </a>
@@ -75,30 +110,27 @@
             </td>
         </tr>
         </tbody>
-
     </table>
 
-
-    <!--    <nav th:if="${totalPages > 1}">-->
-    <!--        <ul class="pagination justify-content-center">-->
-    <!--            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">-->
-    <!--                <a class="page-link" th:href="@{/courses(page=${currentPage - 1})}">Previous</a>-->
-    <!--            </li>-->
-
-    <!--            <li class="page-item"-->
-    <!--                th:each="i : ${#numbers.sequence(0, totalPages - 1)}"-->
-    <!--                th:classappend="${i == currentPage} ? 'active'">-->
-    <!--                <a class="page-link" th:href="@{/courses(page=${i})}" th:text="${i + 1}">1</a>-->
-    <!--            </li>-->
-
-    <!--            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">-->
-    <!--                <a class="page-link" th:href="@{/courses(page=${currentPage + 1})}">Next</a>-->
-    <!--            </li>-->
-    <!--        </ul>-->
-    <!--    </nav>-->
+    <!--
+    <nav th:if="${totalPages > 1}" class="mt-4">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link" th:href="@{/courses(page=${currentPage - 1})}">Previous</a>
+            </li>
+            <li class="page-item"
+                th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link" th:href="@{/courses(page=${i})}" th:text="${i + 1}">1</a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/courses(page=${currentPage + 1})}">Next</a>
+            </li>
+        </ul>
+    </nav>
+    -->
 
 </div>
-
 
 <script th:src="@{/webjars/jquery/3.7.1/jquery.min.js}"></script>
 <script th:src="@{/webjars/bootstrap/4.6.2/js/bootstrap.bundle.min.js}"></script>

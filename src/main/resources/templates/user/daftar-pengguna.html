@@ -5,38 +5,67 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Daftar Peserta</title>
     <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.2/css/bootstrap.min.css}" type="text/css"/>
+    <style>
+        body {
+            font-family: 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            padding-bottom: 60px;
+        }
 
+        h2 {
+            font-weight: bold;
+        }
+
+        .table th,
+        .table td {
+            vertical-align: middle;
+        }
+
+        .btn {
+            border-radius: 0.5rem;
+        }
+
+        .table-container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .page-link {
+            border-radius: 0.375rem !important;
+        }
+
+        .alert {
+            border-radius: 0.5rem;
+        }
+    </style>
 </head>
 <body>
+
 <div th:replace="~{fragment/navbar::navheader}"></div>
+
 <div th:if="${successMessage}" class="container alert alert-success alert-dismissible fade show mt-3" role="alert">
     <strong>Berhasil!</strong> <span th:text="${successMessage}"></span>
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
     </button>
 </div>
-<div class="container mt-5">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Daftar Peserta</h2>
-        <nav class="navbar navbar-light bg-light">
-            <form class="form-inline" method="get" th:action="@{/user-list/search}">
-                <input
-                        class="form-control mr-sm-2"
-                        type="search"
-                        name="nama"
-                        placeholder="Cari nama peserta"
-                        aria-label="Search"
-                >
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </form>
-        </nav>
 
+<div class="container mt-5 table-container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Daftar Peserta</h2>
+        <form class="form-inline" method="get" th:action="@{/user-list/search}">
+            <input class="form-control mr-2" type="search" name="nama" placeholder="Cari nama peserta" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Cari</button>
+        </form>
     </div>
 
-    <table class="table table-bordered table-striped">
-        <thead class="table-dark">
+    <table class="table table-bordered table-hover">
+        <thead class="thead-light">
         <tr>
             <th>ID</th>
             <th>Nama</th>
@@ -45,7 +74,7 @@
             <th>Alamat</th>
             <th>Tanggal Lahir</th>
             <th>No HP</th>
-            <th>Aksi</th> <!-- Kolom tambahan -->
+            <th>Aksi</th>
         </tr>
         </thead>
         <tbody>
@@ -59,14 +88,13 @@
             <td th:text="${user.noHp}">08123456789</td>
             <td>
                 <button type="button"
-                        class="btn btn-sm btn-primary"
+                        class="btn btn-sm btn-primary mb-1"
                         data-toggle="modal"
                         data-target="#modalListCourse"
                         th:attr="data-user-id=${user.id}"
                         th:if="${session.IS_ADMIN}">
                     Pilih Course
                 </button>
-
                 <a th:href="@{'/users/profile/' + ${user.id}}"
                    class="btn btn-sm btn-secondary">
                     Profil
@@ -74,11 +102,9 @@
             </td>
         </tr>
         </tbody>
-
     </table>
 
-
-    <nav th:if="${totalPages > 1}">
+    <nav th:if="${totalPages > 1}" class="mt-4">
         <ul class="pagination justify-content-center">
             <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
                 <a class="page-link" th:href="@{/user-list(page=${currentPage - 1})}">Previous</a>
@@ -95,12 +121,9 @@
             </li>
         </ul>
     </nav>
-
 </div>
-<!-- Menyisipkan fragment modal -->
+
 <div th:replace="~{fragment/modal-list-course :: modalCourseList}"></div>
-
-
 
 <script th:src="@{/webjars/jquery/3.7.1/jquery.min.js}"></script>
 <script th:src="@{/webjars/bootstrap/4.6.2/js/bootstrap.bundle.min.js}"></script>
@@ -123,7 +146,6 @@
         document.getElementById('courseForm').submit();
     }
 </script>
-
 
 </body>
 </html>

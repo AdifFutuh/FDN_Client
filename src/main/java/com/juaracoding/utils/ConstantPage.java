@@ -12,7 +12,7 @@ public class ConstantPage {
     public static final String LOGIN_PAGE = "/auth/login";
     public static final String HOME_PAGE = "/home";
     public static final String CONTACT_US = "/static-page/hubungi-kami";
-    public static final String ABOUT_US = "/static-page/hubungi-kami";
+    public static final String ABOUT_US = "/static-page/tentang-kami";
 
 
 

@@ -306,7 +306,7 @@ public class DefaultController {
     }
 
 
-
+//untuk admin
     @GetMapping("/detail-course-manage/{courseName}")
     public String goToDetailCourseListById(
             @PathVariable("courseName") String courseName,
@@ -320,7 +320,7 @@ public class DefaultController {
 
         model.addAttribute("USR_NAME", user);
         model.addAttribute("MENU_NAVBAR", menuNavbar);
-        model.addAttribute("courseName", courseName);
+        model.addAttribute("COURSE_NAME", courseName);
 
         // Feign call dengan parameter page
         ResponseEntity<Object> response = courseService.findDetailCourseByCourse(page, 10, "course", courseName);
@@ -366,7 +366,7 @@ public class DefaultController {
 
         model.addAttribute("USR_NAME", user);
         model.addAttribute("MENU_NAVBAR", menuNavbar);
-        model.addAttribute("courseName", courseName);
+        model.addAttribute("COURSE_NAME", courseName);
 
         ResponseEntity<Object> response = courseService.findDetailCourseByCourse(page, 10, "course", courseName);
 

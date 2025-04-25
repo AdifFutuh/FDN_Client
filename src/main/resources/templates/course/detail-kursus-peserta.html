@@ -15,7 +15,7 @@
 
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Detail Kursus</h2>
+        <h2>Materi Kursus <span th:text="${COURSE_NAME}"></span> </h2>
     </div>
 
     <div id="accordion">
@@ -39,7 +39,7 @@
                  th:attrappend=" aria-labelledby='heading' + ${iterStat.index}, data-parent='#accordion'">
                 <div class="card-body">
                     <p><strong>ID:</strong> <span th:text="${detail.id}">1</span></p>
-                    <p><strong>Konten:</strong></p>
+                    <p><strong>Konten Materi:</strong></p>
                     <p th:text="${detail.content}">Konten Materi</p>
 
                     <!-- Form -->
