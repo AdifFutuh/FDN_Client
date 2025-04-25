@@ -217,7 +217,6 @@ public class AuthController {
                     Long userId = Long.valueOf(data.get("id").toString());
                     webRequest.setAttribute("USR_ID", userId, WebRequest.SCOPE_SESSION);
 
-                    // Cek apakah user adalah admin
                     boolean isAdmin = ltMenu.stream()
                             .flatMap(group -> ((List<Map<String, Object>>) group.get("subMenu")).stream())
                             .anyMatch(sub -> "Dashboard Admin".equalsIgnoreCase((String) sub.get("nama")));
